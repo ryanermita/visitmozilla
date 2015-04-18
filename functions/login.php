@@ -1,21 +1,27 @@
 <?php 
 define('__ROOT__', dirname(dirname(__FILE__)));
-require(__ROOT__.'/class/user.class.php');
-require(__ROOT__.'/class/database.class.php');
-require(__ROOT__.'/class/session.class.php');
+require(__ROOT__.'/classes/user.class.php');
+require(__ROOT__.'/classes/database.class.php');
+require(__ROOT__.'/classes/session.class.php');
 
 # Initialize classes
 $db = new Database();
 $user = new User($db);
 $session = new Session($user);
 
+# for admin users.
 $username = (isset($_POST['username']) ? $_POST['username'] : '');
 $password = (isset($_POST['password']) ? $_POST['password'] : '');
+
+# for normal users.
 $assertion = (isset($_POST['assertion']) ? $_POST['assertion'] : '');
-# use this variable for prod
-#$audience = 'http://visit.mozillaph.org/';
-# use this variable for local testing
-$audience = 'http://localhost/visitmozilla/';
+
+# use audience base on the environment server name.
+if($_SERVER['SERVER_NAME'] === 'localhost'){
+  $audience = 'http://localhost/visitmozilla/';
+} else {
+  $audience = 'http://visit.mozillaph.org/';
+}
 
 if(!isset($_POST['assertion'])){
   # This is for Admin login
